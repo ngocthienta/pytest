@@ -1,4 +1,5 @@
 import math
+import string
 def hello(n) :
     if isinstance(n, str) == False:
         raise ValueError('A string is expected')
@@ -7,7 +8,6 @@ def hello(n) :
     return (result)
 
 def calculate_hypotenuse(a, b) :
-
     result = math.sqrt(a*a + b*b)
     return (result)
 
@@ -15,22 +15,20 @@ def are_all_conditions_true(cond) :
     if cond == [] :
         result = None
     else :
-        result = True
-        for i in cond :
-            if i == False :
-                result = False
-                break
+        if False in cond :
+            result = False
+        else :
+            result = True
     return (result)
 
 def is_a_condition_true(cond) :
     if cond == [] :
         result = None
     else :
-        result = False
-        for i in cond :
-            if i == True :
-                result = True
-                break
+        if True in cond :
+            result = True
+        else :
+            result = False
     return (result)
 
 def filter_integers_greater_than(l, n) :
@@ -109,3 +107,88 @@ def factorial(n) :
     for i in range(n) :
             fact *= (i+1)
     return (fact)
+
+def char_to_int(c) :
+    if isinstance(c,str) == False :
+        raise TypeError('Not a string')
+    if len(c) != 1 or ord(c) < 48 or ord(c) > 57 :
+        raise ValueError('Not a single digit')
+    #V1
+    # for i in range(10) :
+    #     if ord(str(i)) == ord(c) :
+    #         return (i)
+    #V2
+    num = ord(c) - 48
+    return num
+
+def string_to_int(s) :
+    if isinstance(s,str) == False :
+        raise TypeError('Not a string')
+    for i in s :
+        if ord(i) < 48 or ord(i) > 57 :
+            raise ValueError('Not a positive integer string expression')
+    digits_list = []
+    for c in s :
+        digits_list.append(ord(c)-48)
+    num = 0
+    for i in range(len(digits_list)) :
+        num += digits_list[i]*(10**(len(digits_list)-i-1))
+    return (num)
+
+def is_palindrome(value) :
+    new = str(value).replace(' ','').lower()
+    for c in new :
+        check1 = c in string.ascii_letters
+        check2 = c in string.digits
+        if check1 == False and check2 == False:
+            new = new.replace(c,'')
+    if new == '' :
+        T_or_F = False
+    else :
+        t = 1
+        T_or_F = True
+        times_to_run = len(new)//2
+        for i in range(times_to_run) :
+            if new[i] != new[i-t] :
+                T_or_F = False
+                break
+            t += 2
+    return (T_or_F)
+
+def roman_numeral_to_int(roman_numeral) :
+    lst = [78,73,88,86,76,67,68,77]
+    if isinstance(roman_numeral,str) == False :
+        raise TypeError('Not a string')
+    order = 0
+    count = 0
+    for c in roman_numeral :
+        check = ord(c) in lst
+        if check == False :
+            raise ValueError('Not a Roman numeral')
+        if ord(c) != order :
+            order = ord(c)
+            count = 0
+        else :
+            count += 1
+        if count == 3 :
+            raise ValueError('Not a Roman numeral')
+    lst_rm = list(roman_numeral)
+    int_list = []
+    rm = (('I',1),('V',5),('X',10),('L',50),('C',100),('D',500),('M',1000))
+    for i in lst_rm :
+        for c in rm :
+            if i == c[0] :
+                int_list.append(c[1])
+    val = 0
+    t = 0
+    while t <= len(int_list) - 1 :
+        if t == len(int_list) - 1 :
+            val += int_list[t]
+            break
+        if int_list[t] >= int_list[t+1] :
+            val += int_list[t]
+            t += 1
+        else :
+            val += int_list[t+1]-int_list[t]
+            t += 2
+    return (val)
