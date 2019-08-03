@@ -1,19 +1,56 @@
 import math
 import string
+import pygame
+pygame.init()
+notes = ['a','b','c','d','e','f','g']
+octaves = ['2','3','4','5']
+conv = {'c#':'db','d#':'eb','f#':'gb','g#':'ab','a#':'bb'}
 rm_val = { 'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
 
 
-def hello(n):
-    if not isinstance(n, str):
+def hello(name):
+    """Prints a hello.
+
+    Takes one argument name
+
+    Args:
+        name: A string
+
+    Returns:
+        A string composed of 'Hello ' concatenated with the argument name(rid
+        of leading and trailing whitespace characters) and
+        concatenated with the character '!'.
+
+    Raises :
+        TypeError: name is not a string
+    """
+
+    if not isinstance(name, str):
         raise TypeError('A string is expected')
-    if n.strip:
+    if not name.strip():
         raise ValueError
     else:
-        result = "Hello {}!".format(n)
+        result = "Hello {}!".format(name.strip())
     return result
 
 
 def calculate_hypotenuse(a, b):
+    """Returns the length of the hypotenuse of a right triangle
+
+    Takes two arguments a and b (integers or floats) representing the
+    length of the two sides of a right triangle.
+
+    Args:
+        a, b: An integer or a real number
+
+    Raises:
+        TypeError: either a or b doesn't belong to the types mentioned above
+    """
+
+    # typa = type(a)
+    # typb = type(b)
+    # if not typa == int or not typa == float or not typb == int or not typb == float:
+    #     raise ValueError
     result = math.sqrt(a * a + b * b)
     return result
 
@@ -174,57 +211,85 @@ def is_palindrome(value):
 
 
 def roman_numeral_to_int(roman_numerals):
-    if roman_numerals is 'N':
-        total_val = 0
-    else:
-        if not isinstance(roman_numerals, str) or not roman_numerals.split():
-            raise TypeError
-        for i in roman_numerals:
-            check = [x for x in rm_val]
-            if i not in check:
-                raise ValueError
-        lst = []
-        for i in roman_numerals:
-            lst.append(rm_val[i])
-        dlv = [i for i in lst if i in [5, 50, 500]]
-        if len(dlv) > 3:
+    if not isinstance(roman_numerals, str) or not roman_numerals.split():
+        raise TypeError
+    for i in roman_numerals:
+        check = [x for x in rm_val]
+        if i not in check:
             raise ValueError
-        for i in [5, 50, 500]:
-            ct = dlv.count(i)
-            if ct > 1:
-                raise ValueError
-        lst.append(0)
-        new_lst = []
-        i = 0
-        while i < len(lst) - 1:
-            if lst[i] >= lst[i + 1]:
-                new_lst.append(lst[i])
-                i += 1
-            else:
-                if lst[i] in [5, 50, 500]:
-                    raise ValueError
-                elif lst[i + 1] > 10 * lst[i]:
-                    raise ValueError
-                else:
-                    new_lst.append(lst[i + 1] - lst[i])
-                    i += 2
-        if not sorted(new_lst, reverse=True) == new_lst:
+    lst = []
+    for i in roman_numerals:
+        lst.append(rm_val[i])
+    dlv = [i for i in lst if i in [5, 50, 500]]
+    if len(dlv) > 3:
+        raise ValueError
+    for i in [5, 50, 500]:
+        ct = dlv.count(i)
+        if ct > 1:
             raise ValueError
-        total_val = val10 = val100 = val1000 = 0
-        for i in new_lst:
-            if i < 10:
-                val10 += i
-                if val10 >= 10:
-                    raise ValueError
-            elif i < 100:
-                val100 += i
-                if val100 >= 100:
-                    raise ValueError
-            elif i < 1000:
-                val1000 += i
-                if val1000 >= 1000:
-                    raise ValueError
+    lst.append(0)
+    new_lst = []
+    i = 0
+    while i < len(lst) - 1:
+        if lst[i] >= lst[i + 1]:
+            new_lst.append(lst[i])
+            i += 1
+        else:
+            if lst[i] in [5, 50, 500]:
+                raise ValueError
+            elif lst[i + 1] > 10 * lst[i]:
+                raise ValueError
             else:
-                total_val += i
-        total_val += val10 + val100 + val1000
+                new_lst.append(lst[i + 1] - lst[i])
+                i += 2
+    if not sorted(new_lst, reverse=True) == new_lst:
+        raise ValueError
+    total_val = val10 = val100 = val1000 = 0
+    for i in new_lst:
+        if i < 10:
+            val10 += i
+            if val10 >= 10:
+                raise ValueError
+        elif i < 100:
+            val100 += i
+            if val100 >= 100:
+                raise ValueError
+        elif i < 1000:
+            val1000 += i
+            if val1000 >= 1000:
+                raise ValueError
+        else:
+            total_val += i
+    total_val += val10 + val100 + val1000
+    if total_val > 3999:
+	       raise ValueError
     return total_val
+
+def play_melody(melody, sound_basedir):
+    if (not isinstance(melody,list) and not isinstance(melody,tuple)) or not melody:
+        raise TypeError
+    for i in melody:
+        if not isinstance(i,str):
+            raise TypeError
+    new_mel = []
+    for i in melody:
+        new_mel.append(i.lower())
+    for i in range(len(new_mel)):
+        if len(new_mel[i]) < 2 or len(new_mel[i]) > 3:
+            raise ValueError
+        if not new_mel[i][0] in notes or not new_mel[i][-1] in octaves:
+            raise ValueError
+        for j in ['e#','b#','cb','fb']:
+            if j in new_mel[i]:
+                raise ValueError
+        if new_mel[i][0:2] in conv:
+            print(new_mel[i][0:2])
+            new_mel[i] = new_mel[i].replace(new_mel[i][0:2],conv[new_mel[i][0:2]])
+    lst = []
+    for i in new_mel:
+        lst.append('{}/{}.ogg'.format(sound_basedir,i))
+        sound = pygame.mixer.Sound('{}/{}.ogg'.format(sound_basedir,i))
+        sound.play()
+        pygame.time.delay(300)
+        pygame.mixer.stop()
+    return lst
