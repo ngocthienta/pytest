@@ -35,7 +35,7 @@ def hello(name):
 
 
 def calculate_hypotenuse(a, b):
-    """Returns the length of the hypotenuse of a right triangle
+    """Returns the length of the hypotenuse of a right triangle.
 
     Takes two arguments a and b (integers or floats) representing the
     length of the two sides of a right triangle.
@@ -50,12 +50,17 @@ def calculate_hypotenuse(a, b):
     x = lambda u : isinstance(u,int)
     y = lambda u : isinstance(u,float)
     if (not x(a) and not y(a)) or (not x(b) and not y(b)):
-        raise ValueError
+        raise TypeError
     result = math.sqrt(a * a + b * b)
     return result
 
 
 def are_all_conditions_true(cond):
+    if not isinstance(cond,list):
+        raise TypeError('A list is expected')
+    for i in cond:
+        if not isinstance(i,bool):
+            raise ValueError('The list must contain either booleans or nothing at all')
     if not cond:
         result = None
     else:
@@ -67,6 +72,11 @@ def are_all_conditions_true(cond):
 
 
 def is_a_condition_true(cond):
+    if not isinstance(cond,list):
+        raise TypeError('A list is expected')
+    for i in cond:
+        if not isinstance(i,bool):
+            raise ValueError('The list must contain either booleans or nothing at all')
     if not cond:
         result = None
     else:
@@ -78,6 +88,13 @@ def is_a_condition_true(cond):
 
 
 def filter_integers_greater_than(l, n):
+    if not isinstance(l,list):
+        raise TypeError('A list is expected')
+    if not isinstance(n,int):
+        raise TypeError('An integer is expected')
+    for i in l:
+        if not isinstance(i,int):
+            raise ValueError('The list must contain only integers')
     lst = []
     for i in l:
         if i > n:
@@ -86,6 +103,17 @@ def filter_integers_greater_than(l, n):
 
 
 def find_cheapest_hotels(hotel_daily_rates, maximum_daily_rate):
+    if not isinstance(maximum_daily_rate,int) and not isinstance(maximum_daily_rate,float):
+        raise TypeError('An integer or a float is expected')
+    if not isinstance(hotel_daily_rates,list):
+        raise TypeError('A list is expected')
+    for i in hotel_daily_rates:
+        if not isinstance(i,tuple):
+            raise ValueError('The list must contain only tuples')
+        if len(i) != 2:
+            raise ValueError('Tuples must only contain 2 objects')
+        if not isinstance(i[0],str) or (not isinstance(i[1],int) and not isinstance(i[1],float)):
+            raise ValueError("Tuples' objects are invalid")
     aff_hotels = []
     # find the suitable hotels
     for i in hotel_daily_rates:
@@ -101,32 +129,35 @@ def find_cheapest_hotels(hotel_daily_rates, maximum_daily_rate):
 
 
 def calculate_euclidean_distance_between_2_points(p1, p2):
+    if not isinstance(p1,tuple) or not isinstance(p2,tuple):
+        raise TypeError('A tuple is expected')
+    for i in range(len(p1)):
+        if not isinstance(p1[i],int) or not isinstance(p2[i],int):
+            raise ValueError('Coordinates must be integers')
     euclid_dis = math.sqrt(((p1[0] - p2[0]) ** 2) + ((p1[1] - p2[1]) ** 2))
     return euclid_dis
 
 
 def calculate_euclidean_distance_between_points(points):
-    if isinstance(points, type(None)) or len(points) < 2:
+    if not isinstance(points,list):
+        raise ValueError
+    if len(points) < 2:
         raise ValueError("The list MUST contain at least 2 points")
-    x_coors, y_coors = [], []
-    for i in points:
-        x_coors.append(i[0])
-        y_coors.append(i[1])
     total_dis = 0
-    for i in range(len(x_coors) - 1):
-        total_dis += math.sqrt((x_coors[i] - x_coors[i + 1]) ** 2 + (y_coors[i] - y_coors[i + 1]) ** 2)
+    for i in zip(points,points[1:]):
+        total_dis += calculate_euclidean_distance_between_2_points(i[0],i[1])
     return total_dis
 
 
 def capitalize_words(s):
-    if s is None:
-        return None
     if not isinstance(s, str):
         raise TypeError('Not a string')
+    if s is None:
+        return None
     else:
         # remove unnecessary white spaces
         s = s.split()
-        news = " ".join(s)
+        news = " ".join(s).strip()
         # return
         return news.title()
 
