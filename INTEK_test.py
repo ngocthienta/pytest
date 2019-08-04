@@ -233,7 +233,7 @@ def is_palindrome(value):
         check2 = c in string.digits
         if not check1 and not check2:
             new = new.replace(c, '')
-    if new == '':
+    if not new:
         result = False
     else:
         t = 1
