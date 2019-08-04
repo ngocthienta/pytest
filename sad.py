@@ -123,10 +123,7 @@ def filter_integers_greater_than(l, n):
     for i in l:
         if not isinstance(i,int):
             raise ValueError('The list must contain only integers')
-    lst = []
-    for i in l:
-        if i > n:
-            lst.append(i)
+    lst = [i for i in l if i > n]
     return lst
 
 
@@ -155,17 +152,12 @@ def find_cheapest_hotels(hotel_daily_rates, maximum_daily_rate):
             raise ValueError('Tuples must only contain 2 objects')
         if not isinstance(i[0],str) or (not isinstance(i[1],int) and not isinstance(i[1],float)):
             raise ValueError("Tuples' objects are invalid")
-    aff_hotels = []
     # find the suitable hotels
-    for i in hotel_daily_rates:
-        if maximum_daily_rate >= i[1]:
-            aff_hotels.append(i)
+    aff_hotels = [i for i in hotel_daily_rates if maximum_daily_rate >= i[1]]
     # sort them in ascending order
     aff_hotels = sorted(aff_hotels, key=lambda u: u[1])
     # remove the prices
-    aff_hotels_names = []
-    for i in aff_hotels:
-        aff_hotels_names.append(i[0])
+    aff_hotels_names = [i[0] for i in aff_hotels]
     return aff_hotels_names
 
 
@@ -333,9 +325,7 @@ def string_to_int(s):
     """
     if not isinstance(s, str):
         raise TypeError('Not a string')
-    digits_list = []
-    for i in s:
-        digits_list.append(char_to_int(i))
+    digits_list = [char_to_int(i) for i in s]
     num = 0
     for i in range(len(digits_list)):
         num += digits_list[i] * (10 ** (len(digits_list) - i - 1))
@@ -400,9 +390,7 @@ def roman_numeral_to_int(roman_numerals):
         check = [x for x in rm_val]
         if i not in check:
             raise ValueError('Invalid characters')
-    lst = []
-    for i in roman_numerals:
-        lst.append(rm_val[i])
+    lst = [rm_val[i] for i in roman_numerals]
     dlv = [i for i in lst if i in [5, 50, 500]]
     if len(dlv) > 3:
         raise ValueError('D,L,V must each appear once only')
@@ -463,17 +451,15 @@ def play_melody(melody, sound_basedir):
         A list of the file pathname of the notes that have been played
         one after the other.
     Raises:
-        TypeError : If the melody is not a list or is an empty list.
+        TypeError : If the melody is not a list/tuple or is empty.
         ValueError
     """
-    if not isinstance(melody,list) or not melody:
-        raise TypeError('Not a list')
+    if (not isinstance(melody,list) and not isinstance(melody,tuple)) or not melody:
+        raise TypeError('Not a list or a tuple')
     for i in melody:
         if not isinstance(i,str):
             raise ValueError('Note should be a string')
-    new_mel = []
-    for i in melody:
-        new_mel.append(i.lower())
+    new_mel = [i.lower() for i in melody]
     for i in range(len(new_mel)):
         if len(new_mel[i]) < 2 or len(new_mel[i]) > 3:
             raise ValueError
@@ -485,9 +471,8 @@ def play_melody(melody, sound_basedir):
         if new_mel[i][0:2] in conv:
             print(new_mel[i][0:2])
             new_mel[i] = new_mel[i].replace(new_mel[i][0:2],conv[new_mel[i][0:2]])
-    lst = []
+    lst = ['{}/{}.ogg'.format(sound_basedir,i) for i in new_mel]
     for i in new_mel:
-        lst.append('{}/{}.ogg'.format(sound_basedir,i))
         sound = pygame.mixer.Sound('{}/{}.ogg'.format(sound_basedir,i))
         sound.play()
         pygame.time.delay(550)
