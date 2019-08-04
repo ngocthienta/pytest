@@ -56,13 +56,13 @@ def calculate_hypotenuse(a, b):
 
 
 def are_all_conditions_true(cond):
+    if not cond:
+        return None
     if not isinstance(cond,list):
         raise TypeError('A list is expected')
     for i in cond:
         if not isinstance(i,bool):
             raise ValueError('The list must contain either booleans or nothing at all')
-    if not cond:
-        result = None
     else:
         if False in cond:
             result = False
@@ -132,8 +132,10 @@ def calculate_euclidean_distance_between_2_points(p1, p2):
     if not isinstance(p1,tuple) or not isinstance(p2,tuple):
         raise TypeError('A tuple is expected')
     for i in range(len(p1)):
-        if not isinstance(p1[i],int) or not isinstance(p2[i],int):
-            raise ValueError('Coordinates must be integers')
+        if not isinstance(p1[i],int) and not isinstance(p1[i],float):
+            raise ValueError('Coordinates must be real numbers')
+        if not isinstance(p2[i],int) and not isinstance(p2[i],float):
+            raise ValueError('Coordinates must be real numbers')
     euclid_dis = math.sqrt(((p1[0] - p2[0]) ** 2) + ((p1[1] - p2[1]) ** 2))
     return euclid_dis
 
@@ -163,10 +165,10 @@ def capitalize_words(s):
 
 
 def uppercase_lowercase_words(s):
+    if not s:
+        return None
     if not isinstance(s, str) :
         raise TypeError('Not a string')
-    elif s is None:
-        return None
     else:
         # take out the words
         s = s.split()
@@ -248,22 +250,26 @@ def is_palindrome(value):
 
 
 def roman_numeral_to_int(roman_numerals):
-    if not isinstance(roman_numerals, str) or not roman_numerals.split():
-        raise TypeError
+    if not roman_numerals:
+        raise TypeError('Not a string')
+    if not isinstance(roman_numerals, str):
+        raise TypeError('Not a string')
+    if not roman_numerals.split():
+        raise ValueError('Not an empty string')
     for i in roman_numerals:
         check = [x for x in rm_val]
         if i not in check:
-            raise ValueError
+            raise ValueError('Invalid characters')
     lst = []
     for i in roman_numerals:
         lst.append(rm_val[i])
     dlv = [i for i in lst if i in [5, 50, 500]]
     if len(dlv) > 3:
-        raise ValueError
+        raise ValueError('D,L,V must each appear once only')
     for i in [5, 50, 500]:
         ct = dlv.count(i)
         if ct > 1:
-            raise ValueError
+            raise ValueError('D,L,V must each appear once only')
     lst.append(0)
     new_lst = []
     i = 0
@@ -273,41 +279,41 @@ def roman_numeral_to_int(roman_numerals):
             i += 1
         else:
             if lst[i] in [5, 50, 500]:
-                raise ValueError
+                raise ValueError('D,L,V cannot be written in the left of a larger denomination')
             elif lst[i + 1] > 10 * lst[i]:
-                raise ValueError
+                raise ValueError('A denomination cannot be written in the left of another denomination which is over 10 times larger')
             else:
                 new_lst.append(lst[i + 1] - lst[i])
                 i += 2
     if not sorted(new_lst, reverse=True) == new_lst:
-        raise ValueError
+        raise ValueError('The numerals are not written in descending order of value')
     total_val = val10 = val100 = val1000 = 0
     for i in new_lst:
         if i < 10:
             val10 += i
             if val10 >= 10:
-                raise ValueError
+                raise ValueError('X cannot be equalled or exceeded by smaller denominations')
         elif i < 100:
             val100 += i
             if val100 >= 100:
-                raise ValueError
+                raise ValueError('C cannot be equalled or exceeded by smaller denominations')
         elif i < 1000:
             val1000 += i
             if val1000 >= 1000:
-                raise ValueError
+                raise ValueError('M cannot be equalled or exceeded by smaller denominations')
         else:
             total_val += i
     total_val += val10 + val100 + val1000
     if total_val > 3999:
-	       raise ValueError
+	       raise ValueError('The largest number that can be represented in this notation is 3,999')
     return total_val
 
 def play_melody(melody, sound_basedir):
     if (not isinstance(melody,list) and not isinstance(melody,tuple)) or not melody:
-        raise TypeError
+        raise TypeError('Not a list or a tuple')
     for i in melody:
         if not isinstance(i,str):
-            raise TypeError
+            raise ValueError('Note should be a string')
     new_mel = []
     for i in melody:
         new_mel.append(i.lower())
@@ -315,10 +321,10 @@ def play_melody(melody, sound_basedir):
         if len(new_mel[i]) < 2 or len(new_mel[i]) > 3:
             raise ValueError
         if not new_mel[i][0] in notes or not new_mel[i][-1] in octaves:
-            raise ValueError
+            raise ValueError('Your note(s) do not exist')
         for j in ['e#','b#','cb','fb']:
             if j in new_mel[i]:
-                raise ValueError
+                raise ValueError('Your note(s) do not exist')
         if new_mel[i][0:2] in conv:
             print(new_mel[i][0:2])
             new_mel[i] = new_mel[i].replace(new_mel[i][0:2],conv[new_mel[i][0:2]])
