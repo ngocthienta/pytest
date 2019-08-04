@@ -47,10 +47,10 @@ def calculate_hypotenuse(a, b):
         TypeError: either a or b doesn't belong to the types mentioned above
     """
 
-    # typa = type(a)
-    # typb = type(b)
-    # if not typa == int or not typa == float or not typb == int or not typb == float:
-    #     raise ValueError
+    x = lambda u : isinstance(u,int)
+    y = lambda u : isinstance(u,float)
+    if (not x(a) and not y(a)) or (not x(b) and not y(b)):
+        raise ValueError
     result = math.sqrt(a * a + b * b)
     return result
 
@@ -290,6 +290,6 @@ def play_melody(melody, sound_basedir):
         lst.append('{}/{}.ogg'.format(sound_basedir,i))
         sound = pygame.mixer.Sound('{}/{}.ogg'.format(sound_basedir,i))
         sound.play()
-        pygame.time.delay(300)
+        pygame.time.delay(550)
         pygame.mixer.stop()
     return lst
